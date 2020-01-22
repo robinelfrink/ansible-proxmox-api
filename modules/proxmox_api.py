@@ -149,8 +149,12 @@ def main():
         module.exit_json(**result)
     except HTTPError as e:
         result['msg'] = e.strerror
+        result['status_code'] = e.response.status_code
         result['body'] = e.response.request.body
-        result['result'] = e.response.json()
+        try:
+            result['result'] = e.response.json()
+        except:
+            result['result'] = e.response.text
         module.fail_json(**result)
     except Exception as e:
         result['msg'] = e.strerror
